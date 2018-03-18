@@ -6,10 +6,10 @@ from hashlib import sha1
 from config import GITHUB
 
 
-def signature(func):
+def authorization(func):
     @wraps(func)
-    async def signature_wrapper(request, *args, **kwargs):
-        is_authorized = check_signature(request)
+    async def authorization_wrapper(request, *args, **kwargs):
+        is_authorized = validate_authorization(request)
 
         if is_authorized:
             response = await func(request, *args, **kwargs)
@@ -29,23 +29,18 @@ def signature(func):
                 },
                 401
             )
-    return signature_wrapper
+    return authorization_wrapper
 
 
-def check_signature(request):
+def validate_authorization(request):
 
     try:
-        git_signature = request.headers['X-Hub-Signature']
-        signature_bytes = hmac.new(
-            GITHUB['WEBHOOK_SIGNATURE_KEY'].encode(),
-            msg=request.body,
-            digestmod=sha1
-        )
-        signature = 'sha1=' + signature_bytes.hexdigest()
+        authorization = request.token
 
-        is_safe = hmac.compare_digest(git_signature, signature)
+        # TODO: Enviar request para um validador de identidade externo
+        # ou dar suporte a gestão de clientes dentro da API
 
-        return is_safe
+        return True
 
     except KeyError:
         return False
