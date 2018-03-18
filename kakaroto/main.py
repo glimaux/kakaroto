@@ -1,7 +1,9 @@
 from sanic import Sanic
+
+from config import APP_NAME
 from controllers import cards, issues
 
-app = Sanic()
+app = Sanic(APP_NAME)
 
 app.add_route(cards.Webhook.as_view(), '/cards/hooks', methods=['POST'], version=1)
 app.add_route(issues.Webhook.as_view(), '/issues/hooks', methods=['POST'], version=1)

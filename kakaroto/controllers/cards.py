@@ -5,15 +5,14 @@ from datetime import datetime
 import asyncio
 
 # Estou tomando erro aqui!
-from models import Session, Card
+# from models import Session, Card
 
 
 class Webhook(HTTPMethodView):
     decorators = [signature]
 
     async def post(self, request):
-        # Como posso fazer para chamar uma task em background aqui? Preciso utilizar o app
-        # app.add_task(process_request(request))
+        request.app.add_task(process_request(request))
         return json(
             {
                 "success": "true"
@@ -22,5 +21,5 @@ class Webhook(HTTPMethodView):
 
 
 async def process_request(request):
-    await asyncio.sleep(0.5)
+    await asyncio.sleep(3)
     print("Delayed Task Ran")
