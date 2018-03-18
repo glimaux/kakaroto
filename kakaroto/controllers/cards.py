@@ -4,8 +4,8 @@ from decorators.signature import signature
 from datetime import datetime
 import asyncio
 
-# Estou tomando erro aqui!
-# from models import Session, Card
+from database.models import Card
+from database.session import Session
 
 
 class Webhook(HTTPMethodView):

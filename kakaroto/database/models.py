@@ -1,5 +1,4 @@
-from sqlalchemy import create_engine, \
-    Column, \
+from sqlalchemy import Column, \
     Integer, \
     String, \
     DateTime, \
@@ -8,14 +7,10 @@ from sqlalchemy import create_engine, \
     Table
 # from sqlalchemy.ext.associationproxy import association_proxy
 from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.orm import sessionmaker, relationship
+from sqlalchemy.orm import relationship
 from dictalchemy import make_class_dictable
 from datetime import datetime
 
-from config import CONNECTION_STRING
-
-engine = create_engine(CONNECTION_STRING, echo=True)
-Session = sessionmaker(bind=engine)
 
 DbModel = declarative_base()
 make_class_dictable(DbModel)
@@ -32,19 +27,38 @@ class Github_User(DbModel):
     issues = relationship('Issue', secondary=lambda: issue_assignee, back_populates='assignees')
 
 
+class Project(DbModel):
+    __tablename__ = 'project'
+
+    id = Column(Integer, primary_key=True)
+    number = Column(Integer, nullable=False)
+    name = Column(String, nullable=False)
+    description = Column(String, nullable=True)
+    html_url = Column(String, nullable=False)
+    created_at = Column(DateTime, nullable=False, default=datetime.utcnow)
+    updated_at = Column(DateTime, nullable=False, default=datetime.utcnow)
+
+    columns = relationship('Board_Column', back_populates='project')
+    cards = relationship('Card', back_populates='project')
+
+
 class Board_Column(DbModel):
     __tablename__ = 'board_column'
 
     id = Column(Integer, primary_key=True)
+    project_id = Column(Integer, ForeignKey(Project.id), nullable=False)
     name = Column(String, nullable=False)
     created_at = Column(DateTime, nullable=False, default=datetime.utcnow)
     updated_at = Column(DateTime, nullable=False, default=datetime.utcnow)
+
+    project = relationship('Project', back_populates='columns')
 
 
 class Card(DbModel):
     __tablename__ = 'cards'
 
     id = Column(Integer, primary_key=True)
+    project_id = Column(Integer, ForeignKey(Project.id), nullable=False)
     note = Column(String, nullable=True)
     created_at = Column(DateTime, nullable=False, default=datetime.utcnow)
     updated_at = Column(DateTime, nullable=False, default=datetime.utcnow)
@@ -52,6 +66,7 @@ class Card(DbModel):
 
     moves = relationship('Card_Move_History')
     issue = relationship('Issue', back_populates='card')
+    project = relationship('Project', back_populates='cards')
 
 
 class Card_Move_History(DbModel):
@@ -70,7 +85,7 @@ class Issue(DbModel):
     id = Column(Integer, primary_key=True)
     card_id = Column(Integer, ForeignKey(Card.id), nullable=False)
     number = Column(Integer, nullable=False)
-    tittle = Column(String, nullable=False)
+    title = Column(String, nullable=False)
     state = Column(String, nullable=False)
     repository = Column(String, nullable=False)
     is_pull_request = Column(Boolean, nullable=False)

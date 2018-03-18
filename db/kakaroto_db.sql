@@ -19,14 +19,34 @@ CREATE TABLE IF NOT EXISTS `kkrt`.`github_user` (
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8;
 
+-- Table Project
+CREATE TABLE IF NOT EXISTS `kkrt`.`project` (
+    `id` INT(11) NOT NULL,
+    `number` INT(11) NOT NULL,
+    `name` VARCHAR(128) NOT NULL,
+    `description` VARCHAR(500),
+    `html_url` VARCHAR(128) NOT NULL,
+    `created_at` DATETIME(3) NOT NULL,
+    `updated_at` DATETIME(3) NOT NULL,
+    PRIMARY KEY (`id`)
+)
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = utf8;
+
 -- Table Board Column
 CREATE TABLE IF NOT EXISTS `kkrt`.`board_column` (
     `id` INT(11) NOT NULL,
+    `project_id` INT(11) NOT NULL,
     `name` VARCHAR(128) NOT NULL,
     `created_at` DATETIME(3) NOT NULL,
     `updated_at` DATETIME(3) NOT NULL,
     PRIMARY KEY (`id`),
-    UNIQUE INDEX `UQ_name` (`name` ASC)
+    UNIQUE INDEX `UQ_name` (`name` ASC),
+    CONSTRAINT `FK_project_board_column`
+        FOREIGN KEY (`project_id`)
+        REFERENCES `kkrt`.`project` (`id`)
+        ON DELETE CASCADE
+        ON UPDATE RESTRICT
 )
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8;
@@ -34,11 +54,17 @@ DEFAULT CHARACTER SET = utf8;
 -- Table Card
 CREATE TABLE IF NOT EXISTS `kkrt`.`card` (
     `id` INT(11) NOT NULL,
+    `project_id` INT(11) NOT NULL,
     `note` VARCHAR(128),
     `created_at` DATETIME(3) NOT NULL,
     `updated_at` DATETIME(3) NOT NULL,
     `created_by` INT(11),
     PRIMARY KEY (`id`),
+    CONSTRAINT `FK_project_card`
+        FOREIGN KEY (`project_id`)
+        REFERENCES `kkrt`.`project` (`id`)
+        ON DELETE CASCADE
+        ON UPDATE RESTRICT,
     CONSTRAINT `FK_user_card`
         FOREIGN KEY (`created_by`)
         REFERENCES `kkrt`.`github_user` (`id`)
@@ -77,7 +103,7 @@ CREATE TABLE IF NOT EXISTS `kkrt`.`issue` (
     `id` INT(11) NOT NULL,
     `card_id` INT(11) NOT NULL,
     `number` INT(11) NOT NULL,
-    `tittle` VARCHAR(500) NOT NULL,
+    `title` VARCHAR(500) NOT NULL,
     `state` VARCHAR(128) NOT NULL,
     `repository` VARCHAR(128) NOT NULL,
     `is_pull_request` BOOLEAN NOT NULL,

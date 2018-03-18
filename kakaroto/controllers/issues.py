@@ -1,5 +1,6 @@
 from sanic.views import HTTPMethodView
 from sanic.response import json
+
 from decorators.signature import signature
 
 
