@@ -1,9 +1,5 @@
 from functools import wraps
 from sanic.response import json
-import hmac
-from hashlib import sha1
-
-from config import GITHUB
 
 
 def authorization(func):
