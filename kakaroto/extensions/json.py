@@ -2,7 +2,6 @@ from json import dumps, loads
 import datetime
 import decimal
 from uuid import UUID
-# from .extended_encoder import extended_encoder
 
 
 def extended_encoder(obj):
@@ -21,4 +20,4 @@ def extended_dumps(obj, extensions=extended_encoder, **kwargs):
 
 
 def extended_loads(raw, **kwarfs):
-    pass
+    return loads(raw)

@@ -64,19 +64,19 @@ class Card(DbModel):
     updated_at = Column(DateTime, nullable=False, default=datetime.utcnow)
     created_by = Column(Integer, ForeignKey(GitHubUser.id))
 
-    moves = relationship('Card_Move_History')
+    moves = relationship('CardMoveHistory')
     issue = relationship('Issue', back_populates='card')
     project = relationship('Project', back_populates='cards')
 
 
-class Card_Move_History(DbModel):
+class CardMoveHistory(DbModel):
     __tablename__ = 'board_column_card'
 
     id = Column(Integer, primary_key=True)
     board_column_id = Column(Integer, ForeignKey(Board_Column.id), nullable=False)
     card_id = Column(Integer, ForeignKey(Card.id), nullable=False)
     placed_at = Column(DateTime, nullable=False, default=datetime.utcnow)
-    removed_at = Column(DateTime, nullable=True, default=datetime.utcnow)
+    removed_at = Column(DateTime, nullable=True)
 
 
 class Issue(DbModel):

@@ -1,9 +1,10 @@
 import os
 
-APP_NAME = 'Kakaroto'
+APP_NAME = 'KakarotoWebApi'
 
 GITHUB = {
-    'WEBHOOK_SIGNATURE_KEY': os.environ.get('{}_WEBHOOK_SIGNATURE_KEY'.format(APP_NAME))
+    'WEBHOOK_SIGNATURE_KEY': os.environ.get('{}_GITHUB_WEBHOOK_SIGNATURE_KEY'.format(APP_NAME)),
+    'SECRET_KEY': os.environ.get('{}_GITHUB_SECRET_KEY'.format(APP_NAME))
 }
 
 DATABASE = {
