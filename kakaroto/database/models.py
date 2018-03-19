@@ -16,7 +16,7 @@ DbModel = declarative_base()
 make_class_dictable(DbModel)
 
 
-class Github_User(DbModel):
+class GitHubUser(DbModel):
     __tablename__ = 'github_user'
 
     id = Column(Integer, primary_key=True)
@@ -55,14 +55,14 @@ class Board_Column(DbModel):
 
 
 class Card(DbModel):
-    __tablename__ = 'cards'
+    __tablename__ = 'card'
 
     id = Column(Integer, primary_key=True)
     project_id = Column(Integer, ForeignKey(Project.id), nullable=False)
     note = Column(String, nullable=True)
     created_at = Column(DateTime, nullable=False, default=datetime.utcnow)
     updated_at = Column(DateTime, nullable=False, default=datetime.utcnow)
-    created_by = Column(Integer, ForeignKey(Github_User.id))
+    created_by = Column(Integer, ForeignKey(GitHubUser.id))
 
     moves = relationship('Card_Move_History')
     issue = relationship('Issue', back_populates='card')
@@ -92,11 +92,11 @@ class Issue(DbModel):
     html_url = Column(String, nullable=False)
     created_at = Column(DateTime, nullable=False, default=datetime.utcnow)
     updated_at = Column(DateTime, nullable=False, default=datetime.utcnow)
-    created_by = Column(Integer, ForeignKey(Github_User.id))
+    created_by = Column(Integer, ForeignKey(GitHubUser.id))
 
     card = relationship('Card', back_populates='issue', uselist=False)
     labels = relationship('Issue_Label', back_populates='issue', lazy='joined')
-    assignees = relationship('Github_User', secondary=lambda: issue_assignee, back_populates='issues', lazy='joined')
+    assignees = relationship('GitHubUser', secondary=lambda: issue_assignee, back_populates='issues', lazy='joined')
 
 
 class Issue_Label(DbModel):
@@ -113,5 +113,5 @@ class Issue_Label(DbModel):
 
 issue_assignee = Table('issue_assignee', DbModel.metadata,
                        Column('issue_id', Integer, ForeignKey(Issue.id), primary_key=True),
-                       Column('assignee_id', Integer, ForeignKey(Github_User.id), primary_key=True)
+                       Column('assignee_id', Integer, ForeignKey(GitHubUser.id), primary_key=True)
                        )

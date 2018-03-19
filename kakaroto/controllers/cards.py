@@ -1,11 +1,7 @@
 from sanic.views import HTTPMethodView
 from sanic.response import json
 from decorators.signature import signature
-from datetime import datetime
-import asyncio
-
-from database.models import Card
-from database.session import Session
+from resolvers.card_webhook_action_resolver import card_webhook_action_resolver
 
 
 class Webhook(HTTPMethodView):
@@ -21,5 +17,10 @@ class Webhook(HTTPMethodView):
 
 
 async def process_request(request):
-    await asyncio.sleep(3)
-    print("Delayed Task Ran")
+    try:
+        if request.json['action'] in card_webhook_action_resolver:
+            operation = card_webhook_action_resolver[request.json['action']]
+
+            await operation(request.json)
+    except Exception as ex:
+        print(ex.args)
