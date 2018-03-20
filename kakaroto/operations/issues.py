@@ -2,9 +2,10 @@ from database.models import Issue
 from database.session import Session
 from mappers.github import GitHubIssueMapper
 from .users import get_or_create_user
-# from .labels import create_label
+from .labels import create_label
 
 
+# TODO: transformar em get_or_create pois um card pode estar sendo readicionado
 async def create_issue(body, card_id, session=None):
     if session is None:
         session = Session()
@@ -26,11 +27,9 @@ async def create_issue(body, card_id, session=None):
                 issue.assignees.append(user)
             session.flush()
 
-        '''
         if body['labels']:
-            for label in body['labels':]:
+            for label in body['labels']:
                 await create_label(label, body['id'], session)
-        '''
 
     # TODO: add rollback expression
     except Exception as ex:

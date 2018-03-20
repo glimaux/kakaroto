@@ -1,18 +1,12 @@
 
 class GitHubCardMapper(object):
 
-    def __init__(self, body):
+    def __init__(self, body, project_id):
         super().__init__()
         self.id = body['id']
-        self.project_id = get_project_id(body)
+        self.project_id = project_id
         self.note = body['note'] if body['note'] is not None else None
         self.created_by = body['creator']['id']
-
-
-# TODO: method to retrieve project ID in database
-#       move to appropiate file
-def get_project_id(body):
-    return 778903
 
 
 class GitHubUserMapper(object):
@@ -45,3 +39,12 @@ class GitHubIssueMapper(object):
         self.is_pull_request = True if 'pull_request' in body else False
         self.html_url = body['html_url']
         self.created_by = body['user']['id']
+
+
+class GitHubLabelMapper(object):
+
+    def __init__(self, body, issue_id):
+        super().__init__()
+        self.label_id = body['id']
+        self.issue_id = issue_id
+        self.name = body['name']

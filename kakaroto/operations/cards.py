@@ -7,7 +7,7 @@ from .card_moves import create_card_move
 from agents.github import get_issue
 
 
-async def create_card(body, session=None):
+async def create_card(body, project_id, session=None):
     if session is None:
         session = Session()
 
@@ -15,7 +15,7 @@ async def create_card(body, session=None):
     try:
         await get_or_create_user(body['project_card']['creator'], session)
 
-        card = GitHubCardMapper(body['project_card'])
+        card = GitHubCardMapper(body['project_card'], project_id)
 
         card = Card().fromdict(card.__dict__, allow_pk=True)
 

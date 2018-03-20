@@ -95,11 +95,11 @@ class Issue(DbModel):
     created_by = Column(Integer, ForeignKey(GitHubUser.id))
 
     card = relationship('Card', back_populates='issue', uselist=False)
-    labels = relationship('Issue_Label', back_populates='issue', lazy='joined')
+    labels = relationship('IssueLabel', back_populates='issue', lazy='joined')
     assignees = relationship('GitHubUser', secondary=lambda: issue_assignee, back_populates='issues', lazy='joined')
 
 
-class Issue_Label(DbModel):
+class IssueLabel(DbModel):
     __tablename__ = 'issue_label'
 
     id = Column(Integer, primary_key=True)
